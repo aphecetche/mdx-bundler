@@ -416,14 +416,12 @@ Local Content
 })
 
 test('should support over-riding the entry point', async () => {
-  const {code} = await bundleMDX('', {
+  const {code,frontmatter} = await bundleMDX('', {
     cwd: process.cwd(),
     esbuildOptions: options => {
       options.entryPoints = [
         path.join(
           path.dirname(fileURLToPath(import.meta.url)),
-          '..',
-          '..',
           'CONTRIBUTING.md',
         ),
       ]
@@ -439,6 +437,10 @@ test('should support over-riding the entry point', async () => {
   const {container} = render(React.createElement(Component))
 
   assert.match(container.innerHTML, 'Thanks for being willing to contribute')
+  assert.not.equal(frontmatter,{})
+  if (Object.keys(frontmatter).length > 0) {
+    assert.match(frontmatter.title,"Contributing")
+  }
 })
 
 test('should work with react-dom api', async () => {
